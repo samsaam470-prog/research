@@ -268,4 +268,27 @@ async function loadInterview(id) {
     if (data.interview.status === 'published' && data.interview.public_id) {
       const publicUrl = `interview.html?id=${data.interview.public_id}`;
       const fullUrl = new URL(publicUrl, window.location.href).href;
-      document.getElementById('publish-result').inner
+      document.getElementById('publish-result').innerHTML = `
+        <p class="success">This interview is published. Editing will create a new version.</p>
+        <p style="margin-top: 0.5rem;">Current public link:</p>
+        <p><a href="${publicUrl}" target="_blank" style="color: var(--primary); word-break: break-all;">${fullUrl}</a></p>
+      `;
+      document.getElementById('publish-result').classList.remove('hidden');
+    }
+
+    renderQuestions();
+  } catch (err) {
+    showToast('Failed to load interview.');
+  }
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function escapeAttr(str) {
+  return escapeHtml(str).replace(/"/g, '&quot;');
+}
