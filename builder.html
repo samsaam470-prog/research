@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Builder — Interview Research</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <h1>Interview Builder</h1>
+      <div style="display: flex; gap: 0.75rem;">
+        <a href="dashboard.html"><button class="secondary">← Back</button></a>
+        <button class="secondary" id="logout-btn">Log out</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label for="title">Interview title</label>
+        <input id="title" type="text" placeholder="e.g. Freelancer Discovery Interview">
+      </div>
+      <div class="field">
+        <label for="description">Description (optional)</label>
+        <textarea id="description" rows="2" placeholder="What this interview is about..."></textarea>
+      </div>
+    </div>
+
+    <div id="questions-container"></div>
+
+    <div class="card">
+      <button class="secondary" id="add-question-btn">+ Add Question</button>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button id="save-btn">Save Draft</button>
+        <button id="publish-btn">Publish</button>
+      </div>
+      <div id="publish-result" class="hidden" style="margin-top: 1rem;"></div>
+    </div>
+  </div>
+  <script src="js/api.js"></script>
+  <script src="js/builder.js"></script>
+</body>
+</html>
