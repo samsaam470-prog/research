@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Interview Research</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <h1>Dashboard</h1>
+      <div style="display: flex; gap: 0.75rem;">
+        <a href="builder.html"><button>+ New Interview</button></a>
+        <button class="secondary" id="logout-btn">Log out</button>
+      </div>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card stat">
+        <div class="number" id="stat-active">—</div>
+        <div class="label">Active Interviews</div>
+      </div>
+      <div class="card stat">
+        <div class="number" id="stat-draft">—</div>
+        <div class="label">Drafts</div>
+      </div>
+      <div class="card stat">
+        <div class="number" id="stat-subs">—</div>
+        <div class="label">Total Submissions</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Recent Interviews</h2>
+      <div id="recent-interviews"><p class="empty">Loading...</p></div>
+    </div>
+
+    <div class="card">
+      <h2>Recent Submissions</h2>
+      <div id="recent-submissions"><p class="empty">Loading...</p></div>
+    </div>
+
+    <div class="card">
+      <h2>View Submissions by Interview</h2>
+      <div class="field">
+        <select id="interview-select">
+          <option value="">Loading interviews...</option>
+        </select>
+      </div>
+      <div id="submissions-area">
+        <p class="empty">Select an interview to view its submissions.</p>
+      </div>
+    </div>
+  </div>
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
