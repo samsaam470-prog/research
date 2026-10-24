@@ -5,17 +5,132 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Builder — Interview Research</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .builder-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .builder-layout { grid-template-columns: 1fr; }
+    }
+    .column-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px 8px 0 0;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .column-header.agency { border-top: 3px solid #6366f1; }
+    .column-header.freelancer { border-top: 3px solid #10b981; }
+    .column-body {
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 1rem;
+      background: var(--bg);
+      min-height: 200px;
+    }
+    .fixed-page {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .fixed-page .fixed-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .fixed-page .locked-fields {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .fixed-page .locked-field {
+      flex: 1;
+      padding: 0.5rem 0.7rem;
+      background: var(--bg);
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .question-card .q-meta {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .question-card .q-meta span {
+      padding: 0.15rem 0.5rem;
+      background: var(--bg);
+      border-radius: 4px;
+    }
+    .inline-group {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .inline-group label {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-weight: normal;
+      cursor: pointer;
+    }
+    .inline-group input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+    .other-option-row {
+      background: #fef3c7;
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: #92400e;
+    }
+    .md-upload-area {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .md-help {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      background: var(--bg);
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-family: ui-monospace, monospace;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <div class="topbar">
       <h1>Interview Builder</h1>
       <div style="display: flex; gap: 0.75rem;">
-        <a href="dashboard.html"><button class="secondary">← Back</button></a>
+        <a href="dashboard.html"><button class="secondary">← Dashboard</button></a>
         <button class="secondary" id="logout-btn">Log out</button>
       </div>
     </div>
 
+    <!-- Title + description -->
     <div class="card">
       <div class="field">
         <label for="title">Interview title</label>
@@ -25,18 +140,91 @@
         <label for="description">Description (optional)</label>
         <textarea id="description" rows="2" placeholder="What this interview is about..."></textarea>
       </div>
+
+      <div class="field">
+        <label>Upload Markdown (.md) to create questions</label>
+        <div class="md-upload-area">
+          <input type="file" id="md-file" accept=".md,.txt" style="flex: 1; max-width: 320px;">
+          <button class="secondary small" id="md-upload-btn">Parse & Add</button>
+        </div>
+        <details style="margin-top: 0.5rem;">
+          <summary style="cursor: pointer; font-size: 0.85rem; color: var(--muted);">Format help</summary>
+          <div class="md-help">1: Which services do you offer?
+a: Web design
+b: SEO
+c: Content writing
+d: Other
+
+2: How much experience do you have?
+a: 1-3 years
+b: 3-7 years
+c: 7+ years
+
+Each question starts with "N:" and each option with a letter and colon.
+Options marked "Other" (label contains "other", case-insensitive) become the Other option.</div>
+        </details>
+      </div>
     </div>
 
-    <div id="questions-container"></div>
-
+    <!-- Fixed pages 1 & 2 -->
     <div class="card">
-      <button class="secondary" id="add-question-btn">+ Add Question</button>
+      <h2>Pages 1 & 2 (Fixed structure)</h2>
+
+      <div class="fixed-page">
+        <div class="fixed-label">Page 1 — Identity</div>
+        <div class="locked-fields">
+          <div class="locked-field">Your name</div>
+          <div class="locked-field">Your email</div>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;">
+          Name and email are always collected first. They cannot be removed.
+        </p>
+      </div>
+
+      <div class="fixed-page">
+        <div class="fixed-label">Page 2 — Branch</div>
+        <div class="field">
+          <label for="branch-question-text">Question text (editable)</label>
+          <input id="branch-question-text" type="text" value="How do you operate as?" />
+        </div>
+        <div class="locked-fields">
+          <div class="locked-field">Agency</div>
+          <div class="locked-field">Freelancer</div>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;">
+          The two options are fixed. The participant's choice determines which column they see on page 3+.
+        </p>
+      </div>
     </div>
 
+    <!-- Two-column editor, pages 3-15 -->
+    <div class="card">
+      <h2>Pages 3–15 (editable, split by branch)</h2>
+
+      <div class="builder-layout">
+        <div>
+          <div class="column-header agency">
+            <span>Agency questions</span>
+            <button class="small secondary" data-add-side="agency">+ Add</button>
+          </div>
+          <div class="column-body" id="questions-agency"></div>
+        </div>
+        <div>
+          <div class="column-header freelancer">
+            <span>Freelancer questions</span>
+            <button class="small secondary" data-add-side="freelancer">+ Add</button>
+          </div>
+          <div class="column-body" id="questions-freelancer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
     <div class="card">
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
         <button id="save-btn">Save Draft</button>
         <button id="publish-btn">Publish</button>
+        <button class="secondary" id="preview-btn" disabled>Preview (publish first)</button>
       </div>
       <div id="publish-result" class="hidden" style="margin-top: 1rem;"></div>
     </div>
